@@ -649,7 +649,7 @@ async def mobile_list_models(
     """List available models for mobile"""
     try:
         from pathlib import Path
-        models_dir = Path("models")
+        models_dir = Path(__file__).parent.parent / "models"
 
         if not models_dir.exists():
             return {"models": [], "current_model": None}
@@ -672,7 +672,7 @@ async def mobile_list_models(
         current_model_name = None
         try:
             import json
-            config_path = Path("model_config.json")
+            config_path = Path(__file__).parent.parent / "model_config.json"
             if config_path.exists():
                 with open(config_path) as f:
                     config = json.load(f)
