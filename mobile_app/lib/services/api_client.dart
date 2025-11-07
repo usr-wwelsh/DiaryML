@@ -45,6 +45,9 @@ class ApiClient {
     await _storage.write(key: 'server_url', value: url);
   }
 
+  /// Get current server URL
+  String get serverUrl => _serverUrl ?? baseUrl;
+
   /// Clear authentication
   Future<void> logout() async {
     _token = null;

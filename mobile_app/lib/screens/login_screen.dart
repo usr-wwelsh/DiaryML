@@ -12,13 +12,21 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
-  final _serverUrlController = TextEditingController(
-    text: 'http://YOUR_SERVER_IP:8000/api',
-  );
+  final _serverUrlController = TextEditingController();
 
   bool _isLoading = false;
   String? _errorMessage;
   bool _showServerConfig = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Load saved server URL
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final apiClient = context.read<ApiClient>();
+      _serverUrlController.text = apiClient.serverUrl;
+    });
+  }
 
   @override
   void dispose() {

@@ -6,20 +6,28 @@ import 'services/api_client.dart';
 import 'services/local_database.dart';
 import 'services/sync_service.dart';
 
-void main() {
-  runApp(const DiaryMLApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize API client and load saved server URL
+  final apiClient = ApiClient();
+  await apiClient.initialize();
+
+  runApp(DiaryMLApp(apiClient: apiClient));
 }
 
 class DiaryMLApp extends StatelessWidget {
-  const DiaryMLApp({super.key});
+  final ApiClient apiClient;
+
+  const DiaryMLApp({super.key, required this.apiClient});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         // Services
-        Provider<ApiClient>(
-          create: (_) => ApiClient(),
+        Provider<ApiClient>.value(
+          value: apiClient,
         ),
         Provider<LocalDatabase>(
           create: (_) => LocalDatabase.instance,
