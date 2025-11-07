@@ -24,7 +24,10 @@ class _LoginScreenState extends State<LoginScreen> {
     // Load saved server URL
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final apiClient = context.read<ApiClient>();
-      _serverUrlController.text = apiClient.serverUrl;
+      final savedUrl = apiClient.serverUrl;
+      if (savedUrl.isNotEmpty) {
+        _serverUrlController.text = savedUrl;
+      }
     });
   }
 
@@ -43,6 +46,13 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    if (_serverUrlController.text.trim().isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter server URL';
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -52,8 +62,9 @@ class _LoginScreenState extends State<LoginScreen> {
       final apiClient = context.read<ApiClient>();
 
       // Save server URL if changed
-      if (_serverUrlController.text != apiClient.serverUrl) {
-        await apiClient.saveServerUrl(_serverUrlController.text);
+      final serverUrl = _serverUrlController.text.trim();
+      if (serverUrl != apiClient.serverUrl) {
+        await apiClient.saveServerUrl(serverUrl);
       }
 
       // Attempt login
