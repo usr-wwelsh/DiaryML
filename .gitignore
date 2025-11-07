@@ -18,14 +18,16 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+# Ignore Python lib directories but not Flutter's lib/
+/lib/
+/lib64/
+backend/lib/
+backend/lib64/
 parts/
 sdist/
 var/
@@ -34,6 +36,8 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+# Python build/ but keep Flutter build/ unignored separately below
+/build/
 
 # Virtual environments
 venv/

@@ -305,7 +305,4 @@ class ApiClient {
 
   /// Check if authenticated
   bool get isAuthenticated => _token != null;
-
-  /// Get current server URL
-  String get serverUrl => _serverUrl ?? baseUrl;
 }
