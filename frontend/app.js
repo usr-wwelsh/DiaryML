@@ -1,6 +1,7 @@
 // DiaryML Frontend - Vanilla JavaScript
 
-const API_BASE = 'http://192.168.0.123:8000/api';
+// Use relative path since frontend is served from same server
+const API_BASE = '/api';
 
 // State
 const state = {

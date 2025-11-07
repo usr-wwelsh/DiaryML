@@ -75,6 +75,33 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
+@app.on_event("startup")
+async def startup_event():
+    """Display server info on startup"""
+    import socket
+
+    print("\n" + "=" * 60)
+    print("DiaryML - Your Private Creative Companion")
+    print("=" * 60)
+
+    # Get local IP for mobile setup
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+
+        print(f"\n  Desktop: http://localhost:8000")
+        print(f"  Mobile:  http://{local_ip}:8000/api")
+        print(f"\n  Enter the Mobile URL in your phone's DiaryML app")
+        print("=" * 60 + "\n")
+    except Exception as e:
+        print(f"\n  Desktop: http://localhost:8000")
+        print(f"  Mobile:  (Could not detect IP: {e})")
+        print("=" * 60 + "\n")
+
+
 # CORS middleware for local development
 app.add_middleware(
     CORSMiddleware,
