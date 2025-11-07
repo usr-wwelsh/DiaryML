@@ -679,6 +679,48 @@ async def mobile_list_models(
         return {"models": [], "current_model": None}
 
 
+@app.post("/api/mobile/models/switch")
+async def mobile_switch_model(
+    model_filename: str = Form(...),
+    db: DiaryDatabase = Depends(get_current_user)
+):
+    """Switch AI model from mobile app"""
+    try:
+        from pathlib import Path
+        models_dir = Path(__file__).parent.parent / "models"
+        model_path = models_dir / model_filename
+
+        if not model_path.exists():
+            raise HTTPException(status_code=404, detail="Model file not found")
+
+        # Import here to avoid circular imports
+        from qwen_interface import QwenInterface
+
+        # Load new model
+        print(f"Switching to model: {model_filename}")
+
+        # Load the model (auto-detects text-only vs vision)
+        new_qwen = QwenInterface(model_path=model_path, mmproj_path=None)
+
+        # Save this as the preferred model for next startup
+        new_qwen.save_model_preference()
+
+        # Replace in app state
+        app_state["qwen"] = new_qwen
+
+        return {
+            "success": True,
+            "message": f"Switched to {model_filename}",
+            "model": model_filename
+        }
+
+    except Exception as e:
+        print(f"Error switching model: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # === Entry Endpoints ===
 
 @app.post("/api/entries")
