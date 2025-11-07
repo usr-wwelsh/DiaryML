@@ -656,17 +656,33 @@ async def mobile_list_models(
 
         # Find all GGUF model files
         gguf_files = list(models_dir.glob("*.gguf"))
-        models = [f.name for f in gguf_files]
+
+        # Format models as list of dicts with name and size
+        models = []
+        for f in gguf_files:
+            size_mb = f.stat().st_size / (1024 * 1024)
+            models.append({
+                "name": f.name,
+                "size": f"{size_mb:.1f} MB" if size_mb < 1024 else f"{size_mb/1024:.1f} GB",
+                "filename": f.name
+            })
 
         # Get current model from config
         current_model = None
+        current_model_name = None
         try:
             import json
             config_path = Path("model_config.json")
             if config_path.exists():
                 with open(config_path) as f:
                     config = json.load(f)
-                    current_model = config.get("model_path", "").replace("models/", "")
+                    current_model_name = config.get("model_path", "").replace("models/", "")
+
+                # Find the current model in the list
+                for m in models:
+                    if m["filename"] == current_model_name:
+                        current_model = m
+                        break
         except:
             pass
 
@@ -676,6 +692,8 @@ async def mobile_list_models(
         }
     except Exception as e:
         print(f"Error listing models: {e}")
+        import traceback
+        traceback.print_exc()
         return {"models": [], "current_model": None}
 
 
