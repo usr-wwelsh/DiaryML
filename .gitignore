@@ -1,0 +1,63 @@
+# DiaryML .gitignore
+
+# Private data
+diary.db
+diary.db-wal
+diary.db-shm
+chroma_db/
+uploads/
+model_config.json
+
+# Model files (too large for git)
+models/*.gguf
+models/*.bin
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+venv*/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# Flutter SDK (users should install separately)
+mobile_app/flutter/

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiaryML - Your Private Creative Companion</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Password Unlock Screen -->
+    <div id="unlock-screen" class="screen active">
+        <div class="unlock-container">
+            <h1>DiaryML</h1>
+            <p class="subtitle">Your Private Creative Companion</p>
+
+            <form id="unlock-form">
+                <input
+                    type="password"
+                    id="password-input"
+                    placeholder="Enter password to unlock"
+                    autocomplete="current-password"
+                    required
+                />
+                <button type="submit">Unlock</button>
+            </form>
+
+            <p class="hint">First time? Enter a new password to create your diary.</p>
+            <div id="unlock-error" class="error"></div>
+        </div>
+    </div>
+
+    <!-- Main Diary Screen -->
+    <div id="diary-screen" class="screen">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn" style="display: none;">☰</button>
+
+        <!-- Mobile Overlay -->
+        <div class="mobile-overlay" id="mobile-overlay"></div>
+
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <h1>DiaryML</h1>
+                <div class="header-actions">
+                    <button id="settings-btn" class="icon-btn" title="Settings">
+                        <span>⚙️</span>
+                    </button>
+                    <button id="backup-btn" class="icon-btn" title="Backup Diary" onclick="createBackup()">
+                        <span>💾</span>
+                    </button>
+                    <button id="search-btn" class="icon-btn" title="Search (Ctrl+F)">
+                        <span>🔍</span>
+                    </button>
+                    <button id="lock-btn" class="icon-btn" title="Lock Diary">
+                        <span>🔒</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Settings Modal -->
+            <div id="settings-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Settings</h3>
+                        <button class="modal-close" onclick="closeSettingsModal()">×</button>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>AI Model</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+                            Switch between different GGUF models without restarting
+                        </p>
+
+                        <div id="model-info" style="margin-bottom: 1rem; padding: 1rem; background: var(--bg-tertiary); border-radius: 6px;">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Loading model info...</div>
+                        </div>
+
+                        <div id="model-list">
+                            <!-- Models will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Modal -->
+            <div id="search-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Search Entries</h3>
+                        <button class="modal-close" onclick="closeSearchModal()">×</button>
+                    </div>
+                    <div class="search-filters">
+                        <input type="text" id="search-query" placeholder="Search for text..."/>
+
+                        <div class="search-filter-row">
+                            <input type="date" id="search-start-date" placeholder="Start date"/>
+                            <input type="date" id="search-end-date" placeholder="End date"/>
+                        </div>
+
+                        <div class="search-filter-row">
+                            <label>Filter by mood:</label>
+                            <div class="mood-filters">
+                                <label><input type="checkbox" name="mood" value="joy"/> Joy</label>
+                                <label><input type="checkbox" name="mood" value="sadness"/> Sadness</label>
+                                <label><input type="checkbox" name="mood" value="anger"/> Anger</label>
+                                <label><input type="checkbox" name="mood" value="fear"/> Fear</label>
+                                <label><input type="checkbox" name="mood" value="love"/> Love</label>
+                                <label><input type="checkbox" name="mood" value="surprise"/> Surprise</label>
+                            </div>
+                        </div>
+
+                        <button class="primary-btn" onclick="performSearch()">Search</button>
+                    </div>
+
+                    <div id="search-results" class="search-results">
+                        <p style="text-align: center; color: var(--text-secondary);">Enter search criteria and click Search</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Greeting Panel -->
+            <div id="greeting-panel" class="greeting-panel">
+                <h2 id="greeting-text">Good morning!</h2>
+                <div id="suggestions-container" class="suggestions"></div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <!-- Left: Entry Form -->
+                <div class="entry-section">
+                    <h3>New Entry</h3>
+
+                    <form id="entry-form">
+                        <textarea
+                            id="entry-content"
+                            placeholder="Write your thoughts, capture your mood, document your creative journey..."
+                            rows="10"
+                        ></textarea>
+
+                        <div class="form-actions">
+                            <label class="file-upload-btn">
+                                📷 Add Image
+                                <input type="file" id="image-input" accept="image/*" hidden />
+                            </label>
+
+                            <div class="image-preview" id="image-preview"></div>
+
+                            <button type="submit" class="primary-btn">Save Entry</button>
+                        </div>
+                    </form>
+
+                    <div id="entry-feedback" class="feedback"></div>
+
+                    <!-- Detected Mood -->
+                    <div id="mood-display" class="mood-display"></div>
+                </div>
+
+                <!-- Right: AI Chat / Entries -->
+                <div class="side-panel">
+                    <!-- Tab Switcher -->
+                    <div class="tabs">
+                        <button class="tab active" data-tab="chat">AI Chat</button>
+                        <button class="tab" data-tab="entries">Recent Entries</button>
+                        <button class="tab" data-tab="mood">Mood Timeline</button>
+                        <button class="tab" data-tab="insights">Insights</button>
+                    </div>
+
+                    <!-- AI Chat Tab -->
+                    <div id="chat-tab" class="tab-content active">
+                        <!-- Chat Controls -->
+                        <div class="chat-controls">
+                            <select id="chat-session-select">
+                                <option value="">New Chat</option>
+                            </select>
+                            <button onclick="startNewChat()" class="chat-control-btn" title="New Chat">➕</button>
+                            <button onclick="clearCurrentChat()" class="chat-control-btn" title="Clear Chat">🗑️</button>
+                            <button onclick="deleteCurrentChat()" class="chat-control-btn" title="Delete Chat">❌</button>
+                        </div>
+
+                        <div id="chat-messages" class="chat-messages">
+                            <div class="chat-message system">
+                                Ask me anything about your entries, or just talk about what's on your mind...
+                            </div>
+                        </div>
+
+                        <form id="chat-form">
+                            <input
+                                type="text"
+                                id="chat-input"
+                                placeholder="Message DiaryML..."
+                                autocomplete="off"
+                            />
+                            <button type="submit">Send</button>
+                        </form>
+                    </div>
+
+                    <!-- Recent Entries Tab -->
+                    <div id="entries-tab" class="tab-content">
+                        <div id="entries-list" class="entries-list">
+                            <!-- Entries will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Mood Timeline Tab -->
+                    <div id="mood-tab" class="tab-content">
+                        <div id="mood-timeline" class="mood-timeline">
+                            <!-- Mood visualization will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Insights Tab -->
+                    <div id="insights-tab" class="tab-content">
+                        <div class="insights-container">
+                            <div class="insights-header">
+                                <h3>Life Patterns & Insights</h3>
+                                <p class="insights-subtitle">Discover patterns in your mood, projects, and emotional triggers</p>
+                            </div>
+
+                            <!-- Insights Navigation -->
+                            <div class="insights-nav">
+                                <button class="insights-nav-btn active" data-insight="mood-cycles">
+                                    📅 Mood Cycles
+                                </button>
+                                <button class="insights-nav-btn" data-insight="project-momentum">
+                                    🚀 Project Momentum
+                                </button>
+                                <button class="insights-nav-btn" data-insight="emotional-triggers">
+                                    💭 Emotional Triggers
+                                </button>
+                            </div>
+
+                            <!-- Mood Cycles Content -->
+                            <div id="mood-cycles-content" class="insight-content active">
+                                <div class="insight-loading">Loading mood cycle analysis...</div>
+                                <div id="mood-cycles-data" style="display: none;"></div>
+                            </div>
+
+                            <!-- Project Momentum Content -->
+                            <div id="project-momentum-content" class="insight-content">
+                                <div class="insight-loading">Loading project momentum analysis...</div>
+                                <div id="project-momentum-data" style="display: none;"></div>
+                            </div>
+
+                            <!-- Emotional Triggers Content -->
+                            <div id="emotional-triggers-content" class="insight-content">
+                                <div class="insight-loading">Loading emotional triggers analysis...</div>
+                                <div id="emotional-triggers-data" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

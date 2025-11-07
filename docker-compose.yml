@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  diaryml:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: diaryml
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist database and data
+      - ./diary.db:/app/diary.db
+      - ./chroma_db:/app/chroma_db
+      - ./uploads:/app/uploads
+      - ./models:/app/models
+      - ./model_config.json:/app/model_config.json
+      # Mount code for live updates (no rebuild needed!)
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    # Resource limits (adjust based on your system)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

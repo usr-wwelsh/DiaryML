@@ -1,0 +1,24 @@
+# DiaryML Dependencies
+
+# Core Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# AI/ML Libraries
+llama-cpp-python>=0.2.20
+transformers>=4.35.0
+torch>=2.1.0
+sentence-transformers>=2.2.2
+numpy>=1.24.0
+
+# Vector Database
+chromadb>=0.4.15
+
+# Database Encryption (REQUIRED for privacy)
+pysqlcipher3>=1.2.0
+
+# Utilities
+python-dateutil>=2.8.2
