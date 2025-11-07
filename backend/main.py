@@ -381,7 +381,14 @@ async def mobile_sync(
                 recent_entries = db.get_recent_entries(limit=100)
 
                 for entry in recent_entries:
-                    entry_dt = datetime.fromisoformat(entry["timestamp"])
+                    # Ensure timezone-aware comparison
+                    timestamp_str = entry["timestamp"]
+                    if 'Z' in timestamp_str or '+' in timestamp_str:
+                        entry_dt = datetime.fromisoformat(timestamp_str.replace('Z', '+00:00'))
+                    else:
+                        # If no timezone, assume UTC
+                        entry_dt = datetime.fromisoformat(timestamp_str).replace(tzinfo=last_sync_dt.tzinfo)
+
                     if entry_dt > last_sync_dt:
                         updated_entries.append(entry)
 
@@ -522,7 +529,7 @@ async def mobile_get_chat_sessions(
         if not qwen:
             return {"sessions": []}
 
-        sessions = db.get_all_chat_sessions()
+        sessions = db.get_chat_sessions()  # Fixed: correct method name
         return {"sessions": sessions}
     except Exception as e:
         print(f"Error getting chat sessions: {e}")
