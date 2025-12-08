@@ -4,9 +4,9 @@ A Flutter-based mobile companion app for DiaryML - your private AI diary.
 
 ## 📥 Quick Install
 
-**Want to use the app right away?** Download the latest APK from the [Releases](https://github.com/wedsmoker/DiaryML/releases) tab - no building required!
+**Want to use the app right away?** Download the latest APK from the [Releases](https://github.com/usr-wwelsh/DiaryML/releases) tab - no building required!
 
-1. Download `app-release.apk` from [Releases](https://github.com/wedsmoker/DiaryML/releases)
+1. Download `app-release.apk` from [Releases](https://github.com/usr-wwelsh/DiaryML/releases)
 2. Enable "Install from Unknown Sources" in Android settings
 3. Install the APK
 4. Configure your DiaryML server URL in the app

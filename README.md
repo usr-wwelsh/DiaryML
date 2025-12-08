@@ -2,7 +2,7 @@
 
 ![Privacy](https://img.shields.io/badge/privacy-100%25%20Local-success?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
-[![Android](https://img.shields.io/badge/Android-App%20Available-3DDC84?style=flat-square&logo=android&logoColor=white)](https://github.com/wedsmoker/DiaryML/releases)
+[![Android](https://img.shields.io/badge/Android-App%20Available-3DDC84?style=flat-square&logo=android&logoColor=white)](https://github.com/usr-wwelsh/DiaryML/releases)
 ![CPU](https://img.shields.io/badge/No%20GPU-CPU%20Only-blue?style=flat-square)
 
 **Private, encrypted AI journaling with emotion detection and deep insights. Zero surveillance, zero tracking, 100% local.**
